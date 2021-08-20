@@ -71,53 +71,35 @@ class animated(Scene):
     def construct(self):
         axes =Axes(
             x_range=(0,1,0.1),
-            y_range=(0,8,1),
+            y_range=(0,26,2),
 
-            decimal_number_config={"num_decimal_places": 2},
+            decimal_number_config={"num_decimal_places":2 },
             # include_numbers=True,
         )
-        text_position_pairs = [
-            (str(round(i,2)),i) for i in np.arange(0,1,0.1)
-        ]
-        labels = VGroup()
-        for text, pos in text_position_pairs:
-            label = TexText(text)
-            label.set_height(0.2)
-            
-            axis_point = axes.c2p(pos, 0)
-            label.move_to(axis_point, UR)
-            label.shift(MED_SMALL_BUFF * DOWN)
-            label.shift(SMALL_BUFF * RIGHT)
-            labels.add(label)
-
-            
-
-        axes.x_labels = labels
-        axes.add_coordinate_labels(x_values=())
-        self.add(axes, labels)
+        axes.x_labels = 'Wavelength'
+        axes.add_coordinate_labels(num_decimal_places=2)
         self.wait()
-        
         self.add(axes)
-        self.wait()
 
 
-        t = ValueTracker(.1)
+        T = ValueTracker(.1)
         sin_graph = always_redraw( lambda:axes.get_graph(
-            lambda x: 5*t.get_value() * math.sin(x),
+            lambda x: ((38)/(x**(5)))*((1)/(math.e**(((14400)/(x*T.get_value())))-1)) if x> 0.1 else 0,
+            x_range = [0,1],
             color=BLUE,
         ))
         sin_graph1 = sin_graph.copy().set_color(YELLOW)
         self.add(sin_graph)
         self.add(sin_graph1)
-        self.play(t.animate.set_value(.3), run_time=2)
+        self.play(T.animate.set_value(5000), run_time=2)
         sin_graph2 = sin_graph.copy().set_color(RED)
         
         self.add(sin_graph2)
-        self.play(t.animate.set_value(.5), run_time=2)
+        self.play(T.animate.set_value(6000), run_time=2)
         sin_graph3 = sin_graph.copy().set_color(GREEN)
         
         self.add(sin_graph3)
-        self.play(t.animate.set_value(.9), run_time=2)
+        self.play(T.animate.set_value(7000), run_time=2)
 
 class axis(Scene):
     def construct(self):
