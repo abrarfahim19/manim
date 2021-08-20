@@ -22,7 +22,7 @@ class intro(Scene):
             Text("Photo Electric Effect",font = "Roboto Thin", font_size= 20, color = WHITE),
             Text("Hydrogen Atom",font = "Roboto Thin", font_size= 20, color = WHITE),
             Text("Uncertainty Principal",font = "Roboto Thin", font_size= 20, color = WHITE),
-            Text("All of Physics",font = "Roboto Thin", font_size= 30, color = GREEN),
+            Text("All of Physics",font = "Maiandra GD", font_size= 30, color = GREEN),
         )
 
         texts[0].next_to(sq1,direction=UP)
@@ -66,3 +66,65 @@ class intro(Scene):
         self.play(texts[7].copy().animate.move_to(ORIGIN+UP*3.2).scale(1.5).set_color(BLUE))
         self.wait()
         self.play(FadeOut(qnt))
+
+class animated(Scene):
+    def construct(self):
+        axes =Axes(
+            x_range=(0,1,0.1),
+            y_range=(0,8,1),
+
+            decimal_number_config={"num_decimal_places": 2},
+            # include_numbers=True,
+        )
+        text_position_pairs = [
+            (str(round(i,2)),i) for i in np.arange(0,1,0.1)
+        ]
+        labels = VGroup()
+        for text, pos in text_position_pairs:
+            label = TexText(text)
+            label.set_height(0.2)
+            
+            axis_point = axes.c2p(pos, 0)
+            label.move_to(axis_point, UR)
+            label.shift(MED_SMALL_BUFF * DOWN)
+            label.shift(SMALL_BUFF * RIGHT)
+            labels.add(label)
+
+            
+
+        axes.x_labels = labels
+        axes.add_coordinate_labels(x_values=())
+        self.add(axes, labels)
+        self.wait()
+        
+        self.add(axes)
+        self.wait()
+
+
+        t = ValueTracker(.1)
+        sin_graph = always_redraw( lambda:axes.get_graph(
+            lambda x: 5*t.get_value() * math.sin(x),
+            color=BLUE,
+        ))
+        sin_graph1 = sin_graph.copy().set_color(YELLOW)
+        self.add(sin_graph)
+        self.add(sin_graph1)
+        self.play(t.animate.set_value(.3), run_time=2)
+        sin_graph2 = sin_graph.copy().set_color(RED)
+        
+        self.add(sin_graph2)
+        self.play(t.animate.set_value(.5), run_time=2)
+        sin_graph3 = sin_graph.copy().set_color(GREEN)
+        
+        self.add(sin_graph3)
+        self.play(t.animate.set_value(.9), run_time=2)
+
+class axis(Scene):
+    def construct(self):
+        l2 = Axes(
+            x_range=(-2.5,3.5,0.5),
+            # decimal_number_config={"num_decimal_places": 2},
+            include_numbers=True,
+        )
+        l2.add_coordinate_labels(num_decimal_places=1)
+        self.add(l2)
